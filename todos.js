@@ -40,32 +40,34 @@ const updateProgress = () => {
 const displayTodos = () => {
     const container = document.querySelector('#todos');
     container.innerHTML = '';
-    todos.forEach((todo, index) => {
-        container.innerHTML = container.innerHTML + `
-            <div class="${todo.isCompleted ? 'complete' : 'incomplete'}">
-                <input ${todo.isCompleted ? 'checked' : ''} type="checkbox">
-                ${index + 1}. ${todo.name} - ${todo.difficulty}
-                <button class="delete">X</button>
-            </div>
-        `;
-    });
+    todos.forEach((todo, index) => displayTodo(todo, index));
 };
 
-const addEventListeners = () => {
-    document.querySelectorAll('input[type=checkbox]').forEach((checbox, index) => {
-        checbox.addEventListener('change', () => {
-            todos[index].isCompleted = checbox.checked;
-            updateTodos();
-        });
+const displayTodo = (todo, index) => {
+    const container = document.querySelector('#todos');
+    container.insertAdjacentHTML('beforeend', `
+            <div id="todo${index}" class="${todo.isCompleted ? 'complete' : 'incomplete'}">
+              <input id="checkbox${index}" ${todo.isCompleted ? 'checked' : ''} type="checkbox">
+              ${index + 1}. ${todo.name} - ${todo.difficulty}
+              <button id="delete${index}" class="delete">X</button>
+            </div>`
+        );
+    addEventListener(index);
+};
+
+const addEventListener = index => {
+    const checbox = document.querySelector(`#checkbox${index}`);
+    checbox.addEventListener('change', () => {
+        todos[index].isCompleted = checbox.checked;
+        updateTodos();
     });
 
-    document.querySelectorAll('.delete').forEach((button, index) => {
-        button.addEventListener('click', () => {
-            todos.splice(index, 1);
-            updateTodos();
-        });
+    const button = document.querySelector(`#delete${index}`);
+    button.addEventListener('click', () => {
+        todos.splice(index, 1);
+        updateTodos();
     });
-}
+};
 
 const initOrderButtons = () => {
     document.querySelector('#order-asc').addEventListener('click', () => {
@@ -85,8 +87,12 @@ const initSaveButton = () => {
         const difficulty = Number(document.querySelector('#difficulty').value);
         document.querySelector('#name').value = '';
         document.querySelector('#difficulty').value = '';
-        todos.push({name, difficulty});
-        updateTodos();
+        const todo = {name, difficulty};
+        todos.push(todo);
+        displayTodo(todo, todos.length - 1);
+        updateProgress();
+        updateMaxDifficulty();
+        updateHardestTodo();
     });
 };
 
@@ -101,7 +107,6 @@ const updateHardestTodo = () => {
 
 const updateTodos = () => {
     displayTodos();
-    addEventListeners();
     updateProgress();
     updateMaxDifficulty();
     updateHardestTodo();
