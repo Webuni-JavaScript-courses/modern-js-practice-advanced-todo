@@ -59,7 +59,15 @@ const addEventListener = index => {
     const checbox = document.querySelector(`#checkbox${index}`);
     checbox.addEventListener('change', () => {
         todos[index].isCompleted = checbox.checked;
-        updateTodos();
+        const todoDiv = document.getElementById(`todo${index}`);
+        if (checbox.checked) {
+            todoDiv.classList.remove('incomplete');
+            todoDiv.classList.add('complete');
+        } else {
+            todoDiv.classList.add('incomplete');
+            todoDiv.classList.remove('complete');
+        }
+        updateProgress();
     });
 
     const button = document.querySelector(`#delete${index}`);
