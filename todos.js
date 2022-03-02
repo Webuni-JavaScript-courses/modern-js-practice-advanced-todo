@@ -69,7 +69,8 @@ const addEventListeners = () => {
 
 const initOrderButtons = () => {
     document.querySelector('#order-asc').addEventListener('click', () => {
-        todos.sort((t1, t2) => t1.difficulty < t2.difficulty ? -1 : (t1.difficulty === t2.difficulty ? 0 : 1));
+        // todos.sort((t1, t2) => t1.difficulty < t2.difficulty ? -1 : (t1.difficulty === t2.difficulty ? 0 : 1));
+        todos.sort((t1, t2) => t1.difficulty - t2.difficulty);
         updateTodos();
     });
 
